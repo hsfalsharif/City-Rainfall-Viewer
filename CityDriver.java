@@ -15,7 +15,7 @@ public class CityDriver {
                     "4. Modify a particular rainfall average for a particular city and country pair.\n" +
                     "5. Add monthly rainfall average for the current next month for all cities. \n" +
                     "6. Add New city.\n" +
-                    "7. Delete a city4 . \n" +
+                    "7. Delete a city . \n" +
                     "8. Exit.\n");
             try {
                 choice = kb.nextInt();
