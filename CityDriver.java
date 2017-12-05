@@ -19,35 +19,22 @@ public class CityDriver {
                     "8. Exit.\n");
             try {
                 choice = kb.nextInt();
-
-
             } catch (InputMismatchException e) {
                 System.out.println("Error : " + e);
                 kb.nextLine();
             }
             if (choice < 1 || choice > 8)
                 System.out.println("please enter an integer between 1 - 8 ");
-
             else if( choice == 1){
                 while(fis.hasNextLine()){
                     Scanner stringScanner = new Scanner(fis.nextLine());
-
-
-
                 }
-
-
             }
-
-
-
         } while (cont);
     }
+    public void DisplayRainFallForAll(){
 
-
-    public  void DisplayRainFallForAll(){
-
-
+    //
 
 
 
