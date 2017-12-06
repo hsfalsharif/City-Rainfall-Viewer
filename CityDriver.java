@@ -23,16 +23,15 @@ public class CityDriver {
                 Scanner fis = new Scanner(new FileInputStream("rainfall.txt"));
                 PrintWriter write = new PrintWriter(new FileOutputStream("rainfall.txt", true));
 
-                // get the first line to know how months are written
-                String[] firstLine = fis.nextLine().split("[ ]+"); // turn a string into an array For Example: "Anas Hamza Ahmed" => ["ans" , "Hamza","Ahmed"]
-                int NumberOfDataEntry = firstLine.length - 2;          //remove  city name and country name  from months counter
 
+                int NumberOfDataEntry = ExtructRainFallInformation(fis.nextLine()).length;  // using ExctuctRainFallInformation function which return an array the get the length of that array
+                                                                                            // to know how mb=any months are writtin in the txt file
                 while(fis.hasNextLine() && fis.nextLine().trim() != "") // count how many lines in the txt file
                     NumberOfLines++;
 
                 fis = new Scanner(new FileInputStream("rainfall.txt")); // reopen the txt file again
 
-                System.out.println("Please select your choice : ");
+                System.out.print("Please select your choice : ");
                 choice = kb.nextInt();
                 if(choice > 0 && choice < 9) // all options should be inside the switch statement
                     switch(choice){
@@ -66,49 +65,71 @@ public class CityDriver {
         scn.nextLine();
     }
     // option number 1 ; we print from the txt file directly to the screen as stated in the documentation
+
     public static void  DisplayRainfallForAll(Scanner file,String[] months , int numberOfMonths) throws IllegalArgumentException {
 
         if(!file.hasNextLine())
             throw new IllegalArgumentException("file is empty");
 
-        Scanner string = new Scanner(file.nextLine()); // string scanner contains the first line
-        String City = string.next();
-        String Country = string.next();
-
-
-        if(!string.hasNextDouble()) //No double mean no rainfall information ;the txt file contains cities without rainfall information ;
+        if(numberOfMonths == 0) //No double mean no rainfall information ;the txt file contains cities without rainfall information ;
             throw new IllegalArgumentException("There is no rainfall information in rainfall.txt");
 
-        System.out.printf("%-20s %-20s" , "City" , "Country"); // the -20s for alignment reasons
+        System.out.println(StringfiyHeader(numberOfMonths , months)); // print "City Country Jan Feb..."
+        while (file.hasNextLine()) {
+            System.out.println(StringfiyBody(file.nextLine())); // print "Arusha    Tanzania  22.0" to the reset of the txt file
+
+        }
+    }
+    //                              Helper Functoins
+    // return formated string contains "City    Country     Jan Feb...."
+    private static String StringfiyHeader(int numberOfMonths , String[] MonthsNames){
+        String output = String.format("%-20s %-20s" , "City" , "Country");
 
         for(int i = 0 ; i < numberOfMonths ; i++)
-            System.out.printf("%-10s" ,months[i] ); // print months in the first line : Jan Feb ....
+            output += String.format("%-10s" ,MonthsNames[i] ); // print months in the first line : Jan Feb ....
 
-
-        System.out.printf("%n%-20s %-20s", City , Country);  // we must handle the first line before going to the next one
-        while (string.hasNextDouble())                       // first line
-            System.out.printf("%.2f" ,string.nextDouble()); // first line
-
-
-        while (file.hasNextLine()){
-             string = new Scanner(file.nextLine());
-             City = string.next();
-             Country = string.next();
-
-            System.out.printf("%n%-20s %-20s" , City , Country);
-
-            for(int i = 0; string.hasNextDouble() ;i++)
-                System.out.printf("%-10.1f",string.nextDouble());
-        }
-
-
-    //
-
-
-
+        return output;
     }
-        // This function analyze the txt file to generate an array of references each of then point to a different City object
 
+    // return formated string contains "cityname countryname 44 22 44 5 6775 56"
+    private static String StringfiyBody(String line){
+
+        Scanner string = new Scanner(line);
+        String City = string.next();
+        String Country = string.next();
+        String output = String.format("%-20s %-20s" , City , Country);
+
+
+
+        for(int i = 0; string.hasNextDouble() ;i++){
+            output += String.format("%-10.1f",string.nextDouble());
+
+        }
+        string.close();
+        return output;
+    }
+    // return double array contains rainfall information [33.0, 20.0,63.0]
+    private static double[] ExtructRainFallInformation(String line){
+        int counter = 0;
+        double[] tmp = new double[12];
+        Scanner string = new Scanner(line);
+        String dummy = string.next();
+        dummy = string.next();
+        while(string.hasNextDouble()){
+            tmp[counter] = string.nextDouble();
+            counter++;
+        }
+        if(counter >= 12)
+            return tmp;
+
+        double[] out = new double[counter];
+        for(int i = 0 ; i < counter ; i++)
+            out[i] = tmp[i];
+
+        return out;
+    }
+
+    // This function analyze the txt file to generate an array of references each of then point to a different City object
     public static City[] FileInterpreter(Scanner file,int NumberOflines , int NumberOfDataEntry){
         City[] Citys = new City[NumberOflines];
         double[] data = new double[NumberOfDataEntry]; // Monthly rain information
