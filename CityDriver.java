@@ -2,59 +2,67 @@ import java.util.Scanner;
 import java.io.*;
 import java.util.InputMismatchException;
 public class CityDriver {
-    public static void main(String[] args)  {
+    public static void main(String[] args) {
         Scanner kb = new Scanner(System.in);
 
         boolean cont = true;
         int choice = -1;
         int NumberOfLines = 1;
+        City[] Cities;
+        String[] months = {"Jan", "Feb", "March", "April", "May", "Jun", "July", "Aug", "Sept", "Oct", "Nov", "Dec"};
 
-        String[] months = {"Jan","Feb","March","April","May","Jun","July","Aug","Sept","Oct" ,"Nov","Dec"};
-        do {
-            System.out.println("1. Display Rainfall Infomation for all cities.\n" +
-                    "2. Display Rainfall Infomation for a particular city.\n" +
-                    "3. Display total rainfall for each city.\n" +
-                    "4. Modify a particular rainfall average for a particular city and country pair.\n" +
-                    "5. Add monthly rainfall average for the current next month for all cities. \n" +
-                    "6. Add New city.\n" +
-                    "7. Delete a city . \n" +
-                    "8. Exit.\n");
-            try {
-                Scanner fis = new Scanner(new FileInputStream("rainfall.txt"));
-                PrintWriter write = new PrintWriter(new FileOutputStream("rainfall.txt", true));
+        try {
+            Scanner fis = new Scanner(new FileInputStream("rainfall.txt"));
+            PrintWriter write = new PrintWriter(new FileOutputStream("rainfall.txt", true));
 
 
-                int NumberOfDataEntry = ExtructRainFallInformation(fis.nextLine()).length;  // using ExctuctRainFallInformation function which return an array the get the length of that array
-                                                                                            // to know how mb=any months are writtin in the txt file
-                while(fis.hasNextLine() && fis.nextLine().trim() != "") // count how many lines in the txt file
-                    NumberOfLines++;
+            int NumberOfDataEntry = ExtructRainFallInformation(fis.nextLine()).length;  // using ExctuctRainFallInformation function which return an array the get the length of that array
+            // to know how mb=any months are writtin in the txt file
+            while (fis.hasNextLine() && fis.nextLine().trim() != "") // count how many lines in the txt file
+                NumberOfLines++;
+            fis.close();
+            fis = new Scanner(new FileInputStream("rainfall.txt")); // reopen the txt file again
+            Cities = FileInterpreter(fis, NumberOfLines);
+            fis.close();
 
-                fis = new Scanner(new FileInputStream("rainfall.txt")); // reopen the txt file again
 
+            do {
+                System.out.println("1. Display Rainfall Infomation for all cities.\n" +
+                        "2. Display Rainfall Infomation for a particular city.\n" +
+                        "3. Display total rainfall for each city.\n" +
+                        "4. Modify a particular rainfall average for a particular city and country pair.\n" +
+                        "5. Add monthly rainfall average for the current next month for all cities. \n" +
+                        "6. Add New city.\n" +
+                        "7. Delete a city . \n" +
+                        "8. Exit.\n");
                 System.out.print("Please select your choice : ");
                 choice = kb.nextInt();
-                if(choice > 0 && choice < 9) // all options should be inside the switch statement
-                    switch(choice){
-                        case 1:
-                            DisplayRainfallForAll(fis,months,NumberOfDataEntry);
-                            break;
 
+                if (choice > 0 && choice < 9) // all options should be inside the switch statement
+                    switch (choice) {
+                        case 1:
+                            fis = new Scanner(new FileInputStream("rainfall.txt"));
+                            DisplayRainfallForAll(fis, months, NumberOfDataEntry);
+                            fis.close();
+                            break;
 
                     }
                 WaitForEnter(kb);    // wait for the user to press Enter to continue the while loop as in the documentation
-            } catch (InputMismatchException e) {
+
+            } while (cont);
+        }catch (InputMismatchException e) {
                 System.out.println("Error : " + e);
                 kb.nextLine();
                 WaitForEnter(kb);
-            }catch (IOException e){    //we must handle the IOException inside the main as stated in the documentation
+        }catch (IOException e){    //we must handle the IOException inside the main as stated in the documentation
                 System.out.println("Error :" + e);
-            }
-            catch (IllegalArgumentException e){
+
+        }catch (IllegalArgumentException e){
                 System.out.println("Error :" + e);
             }
 
 
-        } while (cont);
+
     }
 
 
@@ -130,17 +138,16 @@ public class CityDriver {
     }
 
     // This function analyze the txt file to generate an array of references each of then point to a different City object
-    public static City[] FileInterpreter(Scanner file,int NumberOflines , int NumberOfDataEntry){
+    public static City[] FileInterpreter(Scanner file,int NumberOflines){
         City[] Citys = new City[NumberOflines];
-        double[] data = new double[NumberOfDataEntry]; // Monthly rain information
 
         for(int i = 0 ; file.hasNextLine(); i++){
-            Scanner string = new Scanner(file.nextLine());
+            String line = file.nextLine();
+            Scanner string = new Scanner(line);
             String cityName = string.next();
             String countryName = string.next();
-            for(int j = 0 ; file.hasNextDouble(); j++){ // generate an array of rainfall information from the txt file
-                data[j] = file.nextDouble();
-            }
+
+            double[] data = ExtructRainFallInformation(line);
 
             Citys[i] = new City(cityName , countryName , data);
         }
