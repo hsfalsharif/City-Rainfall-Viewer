@@ -16,8 +16,8 @@ public class CityDriver {
             PrintWriter write = new PrintWriter(new FileOutputStream("rainfall.txt", true));
 
 
-            int NumberOfDataEntry = ExtructRainFallInformation(fis.nextLine()).length;  // using ExctuctRainFallInformation function which return an array the get the length of that array
-            // to know how mb=any months are writtin in the txt file
+            int NumberOfMonths = ExtructRainFallInformation(fis.nextLine().split("[ ]+[\t]*")).length;  // using ExctuctRainFallInformation function which return an array the get the length of that array
+            // to know how many months are writtin in the txt file
             while (fis.hasNextLine() && fis.nextLine().trim() != "") // count how many lines in the txt file
                 NumberOfLines++;
             fis.close();
@@ -42,9 +42,25 @@ public class CityDriver {
                     switch (choice) {
                         case 1:
                             fis = new Scanner(new FileInputStream("rainfall.txt"));
-                            DisplayRainfallForAll(fis, months, NumberOfDataEntry);
+                            DisplayRainfallForAll(fis, months, NumberOfMonths);
                             fis.close();
                             break;
+                        case 2:
+
+                            fis = new Scanner(new FileInputStream("rainfall.txt"));
+                            System.out.println("Enter city name : ");
+                            String City = kb.next();
+                            System.out.println("Enter country name : ");
+                            String Country = kb.next();
+                            DisplayRainfallForCity(fis, City , Country , months, NumberOfMonths);
+                            fis.close();
+                            break;
+                        case 3 :
+                            fis = new Scanner(new FileInputStream("rainfall.txt"));
+                            DisplayRainfallWithAverage(fis, months, NumberOfMonths);
+                            fis.close();
+                            break;
+
 
                     }
                 WaitForEnter(kb);    // wait for the user to press Enter to continue the while loop as in the documentation
@@ -81,58 +97,161 @@ public class CityDriver {
 
         if(numberOfMonths == 0) //No double mean no rainfall information ;the txt file contains cities without rainfall information ;
             throw new IllegalArgumentException("There is no rainfall information in rainfall.txt");
-
-        System.out.println(StringfiyHeader(numberOfMonths , months)); // print "City Country Jan Feb..."
+        String Body , line[], header;
+        header = StringfiyHeader(numberOfMonths , months);
+        System.out.println( header + "\n"); // print "City Country Jan Feb..."
         while (file.hasNextLine()) {
-            System.out.println(StringfiyBody(file.nextLine())); // print "Arusha    Tanzania  22.0" to the reset of the txt file
+            line = file.nextLine().split("[ ]+[\t]*");
+            Body = StringfiyBody(line);
+            System.out.println(Body); // print "Arusha    Tanzania  22.0" to the reset of the txt file
 
         }
     }
+
+
+
+
+
+    //option 2
+    public static void DisplayRainfallForCity(Scanner file,String City , String Country,String[] months , int numberOfMonths) {
+        if (!file.hasNextLine())
+            throw new IllegalArgumentException("file is empty");
+
+        if (numberOfMonths == 0) //No double mean no rainfall information ;the txt file contains cities without rainfall information ;
+            throw new IllegalArgumentException("There is no rainfall information in rainfall.txt");
+        String Header = StringfiyHeader(numberOfMonths, months);
+        String Body , line[];
+
+         // print "City Country Jan Feb..."
+        boolean found = false;
+        while (file.hasNextLine()) {
+            line = file.nextLine().split("[ ]+[\t]*");
+
+            if(line[0].equals(City)  && line[1].equals(Country) ){
+                Body = StringfiyBody(line);
+                System.out.println(Header + "\n");
+                System.out.println(Body); // print "Arusha    Tanzania  22.0" to the reset of the txt file
+                found = true;
+
+            }
+
+
+
+        }
+        if(!found)
+            throw new IllegalArgumentException("Invalid city and country pair");
+
+    }
+
+
+
+//option 3
+
+
+
+
+    public static void  DisplayRainfallWithAverage(Scanner file,String[] months , int numberOfMonths) throws IllegalArgumentException {
+
+        if(!file.hasNextLine())
+            throw new IllegalArgumentException("file is empty");
+
+        if(numberOfMonths == 0) //No double mean no rainfall information ;the txt file contains cities without rainfall information ;
+            throw new IllegalArgumentException("There is no rainfall information in rainfall.txt");
+
+        String Body , line[];
+        double average = 0 , data[] ; //
+
+        System.out.println(StringfiyHeader(numberOfMonths , months,"Total (mm)") + "\n"); // print "City Country Jan Feb..."
+        while (file.hasNextLine()) {
+            line = file.nextLine().split("[ ]+[\t]*");
+            data = ExtructRainFallInformation(line);
+
+            for(int i = 0 ; i < data.length ; i++){
+                average += data[i];
+            }
+            average = average / numberOfMonths;
+            Body = StringfiyBody(line ,average);
+
+            System.out.println(Body); // print "Arusha    Tanzania  22.0" to the reset of the txt file
+
+        }
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     //                              Helper Functoins
     // return formated string contains "City    Country     Jan Feb...."
-    private static String StringfiyHeader(int numberOfMonths , String[] MonthsNames){
+    private static String StringfiyHeader(int numberOfMonths , String[] MonthsNames , String... args){
         String output = String.format("%-20s %-20s" , "City" , "Country");
 
         for(int i = 0 ; i < numberOfMonths ; i++)
             output += String.format("%-10s" ,MonthsNames[i] ); // print months in the first line : Jan Feb ....
 
-        return output;
+        for (String elm: args) {
+            output += String.format("%-10s" ,elm );
+        }
+        return output ;
     }
 
     // return formated string contains "cityname countryname 44 22 44 5 6775 56"
-    private static String StringfiyBody(String line){
+    private static String StringfiyBody(String[] line , double... args){
 
-        Scanner string = new Scanner(line);
-        String City = string.next();
-        String Country = string.next();
-        String output = String.format("%-20s %-20s" , City , Country);
+
+        String output = String.format("%-20s %-20s" , line[0] , line[1]);
 
 
 
-        for(int i = 0; string.hasNextDouble() ;i++){
-            output += String.format("%-10.1f",string.nextDouble());
+        for(int i = 0; i < line.length - 2 ;i++){
+            output += String.format("%-10s",line[2 + i]); // Skip the first two element City  &  Country
 
         }
-        string.close();
+
+        for (double elm: args) {
+            output += String.format("%-10.1f" ,elm );
+        }
+
         return output;
     }
     // return double array contains rainfall information [33.0, 20.0,63.0]
-    private static double[] ExtructRainFallInformation(String line){
-        int counter = 0;
-        double[] tmp = new double[12];
-        Scanner string = new Scanner(line);
-        String dummy = string.next();
-        dummy = string.next();
-        while(string.hasNextDouble()){
-            tmp[counter] = string.nextDouble();
-            counter++;
-        }
-        if(counter >= 12)
-            return tmp;
+    private static double[] ExtructRainFallInformation(String[] line){
+        int index = line.length - 2;
+        double[] out = new double[ index ]; // Without the first two element City & Country
 
-        double[] out = new double[counter];
-        for(int i = 0 ; i < counter ; i++)
-            out[i] = tmp[i];
+        for(int i = 0; i < index ;i++){
+            out[i] = Double.parseDouble(line[i + 2]);
+        }
 
         return out;
     }
@@ -147,9 +266,10 @@ public class CityDriver {
             String cityName = string.next();
             String countryName = string.next();
 
-            double[] data = ExtructRainFallInformation(line);
+            double[] data = ExtructRainFallInformation(line.split("[ ]+[\t]*"));
 
             Citys[i] = new City(cityName , countryName , data);
+            string.close();
         }
 
         return Citys;
