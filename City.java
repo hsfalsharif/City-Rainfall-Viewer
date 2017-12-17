@@ -9,6 +9,14 @@ public class City {
         this.averageMonthlyRainfall = averageMonthlyRainfall.clone();
 
 
+
     }
+    public String getCityName() {
+        return cityName;
+    }
+    public String getCountryName() {
+        return countryName;
+    }
+
 
 }
