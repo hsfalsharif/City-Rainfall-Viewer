@@ -11,8 +11,8 @@ public class CityDriver {
 
         try {
             Scanner fis = new Scanner(new FileInputStream("rainfall.txt"));
-            PrintWriter write = new PrintWriter(new FileOutputStream("rainfall.txt"));
-            int NumberOfMonths = ExtractRainfallInformation(fis.nextLine().split("[ ]+[\t]*")).length;  // using ExtractRainFallInformation function which return an array that gets the length of that array
+
+            int NumberOfMonths = ExtractRainfallInformation(fis.nextLine().split("[ \t]+[ \t]*")).length;  // using ExtractRainFallInformation function which return an array that gets the length of that array
             // to know how many months are written in the txt file
             while (fis.hasNextLine() && fis.nextLine().trim() != "") // counts how many lines in the txt file
                 NumberOfLines++;
@@ -69,6 +69,8 @@ public class CityDriver {
                     System.out.println("Error : " + e.getMessage());
                 }
             } while (choice != 8);
+            PrintWriter write = new PrintWriter(new FileOutputStream("rainfall.txt" ));
+
             for(City object: cities)
                 write.println(object);
         } catch (IOException e) {    //we must handle the IOException inside the main as stated in the documentation
@@ -88,7 +90,7 @@ public class CityDriver {
         header = StringifyHeader(numberOfMonths , months);
         System.out.println( header + "\n"); // print "City Country Jan Feb..."
         while (file.hasNextLine()) {
-            line = file.nextLine().split("[ ]+[\t]*");
+            line = file.nextLine().split("[ \t]+[ \t]*");
             Body = StringifyBody(line);
             System.out.println(Body); // print "Arusha    Tanzania  22.0" to the reset of the txt file
 
@@ -107,7 +109,7 @@ public class CityDriver {
          // print "City Country Jan Feb..."
         boolean found = false;
         while (file.hasNextLine()) {
-            line = file.nextLine().split("[ ]+[\t]*");
+            line = file.nextLine().split("[ \t]+[ \t]*");
 
             if(line[0].equals(City)  && line[1].equals(Country) ){
                 Body = StringifyBody(line);
@@ -137,7 +139,7 @@ public class CityDriver {
 
         System.out.println(StringifyHeader(numberOfMonths , months,"Total (mm)") + "\n"); // print "City Country Jan Feb..."
         while (file.hasNextLine()) {
-            line = file.nextLine().split("[ ]+[\t]*");
+            line = file.nextLine().split("[ \t]+[ \t]*");
             data = ExtractRainfallInformation(line);
 
             for(int i = 0 ; i < data.length ; i++){
@@ -305,7 +307,7 @@ public class CityDriver {
             Scanner string = new Scanner(line); //String Scanner to consume the line into city and country and rainfall...
             String cityName = string.next();
             String countryName = string.next();
-            double[] data = ExtractRainfallInformation(line.split("[ ]+[\t]*")); //to create the array of monthly rainfall
+            double[] data = ExtractRainfallInformation(line.split("[ \t]+[ \t]*")); //to create the array of monthly rainfall
 
             cities[i] = new City(cityName , countryName , data);
             string.close();
