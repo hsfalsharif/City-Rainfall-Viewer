@@ -155,7 +155,77 @@ public class CityDriver {
 
         }
     }
-// option 6
+    //Option 4 .. developed by the hackerMan!
+    private static void modifyRainfallForaCity(Scanner kb)throws IOException,InputMismatchException{
+        //Checking the number of months and the number of lines(cities)
+        int numOfMonths = 0, numOfLines=0;
+        Scanner fis = new Scanner(new FileInputStream("rainfall.txt"));
+        fis.next();fis.next();  //to make the cursor move to the first month's rainfall information
+        while(fis.hasNextDouble()) {
+            fis.nextDouble();
+            numOfMonths++;
+        }
+        while(fis.hasNextLine()){
+            fis.nextLine();
+            numOfLines++;
+        }
+        fis.close();
+        //Creating the array of city objects to use it in checking the availability of the city that the user wants to modify and to use it in editing the text file.
+        double [] monthlyRainfall = new double[numOfMonths];
+        City [] cities = new City[numOfLines];
+        fis = new Scanner(new FileInputStream("rainfall.txt"));
+        for(int i=0;i<cities.length;i++){
+            String cityName = fis.next();
+            String countryName = fis.next();
+            for(int j=0;j<monthlyRainfall.length;j++)
+                monthlyRainfall[j] = fis.nextDouble();
+            cities[i] = new City(cityName,countryName,monthlyRainfall);
+        }
+        //Now the array is hopefully filled with the needed information.
+        fis.close();
+        if(numOfMonths<=0)
+            System.out.println("There is no rainfall information in rainfall.txt");
+        else {
+            System.out.print("Enter the name of the city: ");
+            String cityName = kb.next();
+            System.out.print("Enter the name of the country: ");
+            String countryName = kb.next();
+            boolean found = false;
+            int cityLine=-1; //To get the index of the city I will print later...
+            for(int i=0;i<cities.length;i++) {
+                if (cityName.equals(cities[i].getCityName()) && countryName.equals(cities[i].getCountryName())) {
+                    found = true;
+                    cityLine = i;
+                }
+            }
+            if(!found)
+                System.out.println("Error: city and country pair is not found in text file.");
+            else {
+                System.out.printf("Enter the number of month [1 - %d]:",numOfMonths);
+                int chosenMonth = kb.nextInt();
+                if(chosenMonth<1||chosenMonth > numOfMonths)
+                    System.out.println("Invalid month number.");
+                else {
+                    System.out.printf("Enter the new rainfall average for month#%d:",chosenMonth);
+                    double newRainFallAverage = kb.nextDouble();
+                    if(newRainFallAverage<0||newRainFallAverage>1000)
+                        System.out.println("Invalid rainfall average");
+                    else {
+                        System.out.print("Before modification:\t"+cities[cityLine]);
+                        for(double monthAvg:monthlyRainfall)
+                            System.out.print(monthAvg);
+                        cities[chosenMonth-1].modifyMonthlyRainfallAverage(chosenMonth,newRainFallAverage); //here the modification occurs
+                        System.out.print("After modification:\t"+cities[cityLine]);
+                        for(double monthAvg:monthlyRainfall)
+                            System.out.print(monthAvg);//monthlyRainfall[i] equals monthAb
+                        System.out.println("\nRainfall file has been updated");
+                    }
+                }
+            }
+        }
+    } //The end of HackerMan's first method
+
+    // option 6
     public static City[] addCity(City[] Cities, int NumberOfMonths) throws IllegalArgumentException {
         Scanner kb = new Scanner(System.in);
         System.out.println("Enter city name: ");
