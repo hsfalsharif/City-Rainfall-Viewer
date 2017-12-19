@@ -11,6 +11,11 @@ public class City {
 
 
     }
+    public City(City copyCity) throws IllegalArgumentException {
+        this(copyCity.cityName , copyCity.countryName , copyCity.averageMonthlyRainfall);
+
+        
+    }
     public String getCityName() {
         return cityName;
     }

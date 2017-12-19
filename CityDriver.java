@@ -60,11 +60,7 @@ public class CityDriver {
                             fis.close();
                             break;
                         case 6 :
-                            fis = new Scanner(new FileInputStream("rainfall.txt"));
                             Cities =addCity(Cities , NumberOfMonths);
-                            for(int i = 0 ; i < Cities.length ; i++)
-                                System.out.println(Cities[i].getCityName());
-                            fis.close();
                             break;
                     }
                     else
