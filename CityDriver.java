@@ -2,7 +2,7 @@ import java.util.Scanner;
 import java.io.*;
 import java.util.InputMismatchException;
 public class CityDriver {
-    public static void main(String[] args) {
+    public static void main(String[] args) throws IOException {
         Scanner kb = new Scanner(System.in);
         int choice = 0;
         int numberOfLines = 1; //because we used the first line in extractRainfallInformation...
@@ -59,6 +59,9 @@ public class CityDriver {
                             case 6:
                                 cities = addCity(cities, numberOfMonths);
                                 break;
+                            case 8:
+                                System.exit(9);
+
                         }
                     else
                         System.out.print("Invalid choice ...");
@@ -71,12 +74,6 @@ public class CityDriver {
                     System.out.println("Error : " + e.getMessage());
                 }
             } while (choice != 8);
-
-            PrintWriter write = new PrintWriter(new FileOutputStream("rainfall.txt"));
-
-            for(City object: cities)
-                write.println(object);
-            write.close();
         } catch (IOException e) {    //we must handle the IOException inside the main as stated in the documentation
             System.out.println("Error : " + e.getMessage());
         }
@@ -110,7 +107,7 @@ public class CityDriver {
         String Header = StringifyHeader(numberOfMonths, months);
         String Body , line[];
 
-         // print "City Country Jan Feb..."
+        // print "City Country Jan Feb..."
         boolean found = false;
         while (file.hasNextLine()) {
             line = file.nextLine().split("[ \t]+[ \t]*");
@@ -124,9 +121,9 @@ public class CityDriver {
         }
         if(!found)
             System.out.print("Invalid city and country pair");
-        
+
     }
-//option 3
+    //option 3
     public static void  DisplayRainfallWithAverage(Scanner file,String[] months , int numberOfMonths) throws IllegalArgumentException {
 
         if(!file.hasNextLine())
@@ -193,7 +190,7 @@ public class CityDriver {
             System.out.print(monthAvg);//monthlyRainfall[i] equals monthAb
         System.out.println("\nRainfall file has been updated");
     }
-     //The end of HackerMan's first method (Option 4)
+    //The end of HackerMan's first method (Option 4)
     // option 6
     private static City[] addCity(City[] cities, int numberOfMonths) throws IllegalArgumentException {
         Scanner kb = new Scanner(System.in);
@@ -221,7 +218,7 @@ public class CityDriver {
 
     //
     //
-                //Helper Functions
+    //Helper Functions
     // return formatted string contains "City    Country     Jan Feb...."
     private static String StringifyHeader(int numberOfMonths , String[] MonthsNames , String... args) {//args is for total and any additions ..in case..
         String output = String.format("%-20s %-20s" , "City" , "Country");
@@ -286,13 +283,14 @@ public class CityDriver {
         }
         return cities;
     }
-            //Better to use it in options 4,5,6,7
+    //Better to use it in options 4,5,6,7
     private static void updateFile(City [] cities , boolean append) throws IOException{
         PrintWriter write = new PrintWriter(new FileOutputStream("rainfall.txt",append)); //to append , use append = true || to reset the full file append = false
         for(City obj:cities)
             write.println(obj);
+        write.close();
     }
-        //it is used to check the whether the city and country are available in the file(it is useful only with options 2 & 6)
+    //it is used to check the whether the city and country are available in the file(it is useful only with options 2 & 6)
     private static boolean isCityAndCountryFound(City [] cities, String cityName, String countryName){
         for(City obj : cities){
             if(obj.getCityName().equals(cityName)&&obj.getCountryName().equals(countryName))
