@@ -23,10 +23,11 @@ public class City {
     }
 
     public String toString() {
-        String out  = String.format("%s %s  ",this.cityName , this.countryName);
-        for (double monthAverage: this.averageMonthlyRainfall) {
-            out += monthAverage + " ";
+        String out  = String.format("[City name: %-10s , Country name: %-10s , Average monthly rainfall =[",this.cityName , this.countryName);
+        for(int i=0;i<this.averageMonthlyRainfall.length-1;i++){
+            out+= averageMonthlyRainfall[i] + ", ";
         }
+        out += averageMonthlyRainfall[averageMonthlyRainfall.length-1] + "] ]";
         return out;
     }
     public boolean equals(City that) {
@@ -37,7 +38,7 @@ public class City {
     public void modifyAverageMonthlyRainfall(int monthTobeEdited, double newAverageRainfall)throws IllegalArgumentException{
         if(newAverageRainfall<0||newAverageRainfall>1000||monthTobeEdited<1||monthTobeEdited>12)
             throw new IllegalArgumentException("Brother: you either entered an invalid month or average rainfall..figure it out yourself");
-        averageMonthlyRainfall.clone()[monthTobeEdited-1] = newAverageRainfall;
+        averageMonthlyRainfall[monthTobeEdited-1] = newAverageRainfall;
     }
 
 
