@@ -11,12 +11,10 @@ public class CityDriver {
 
         try {
             Scanner fis = new Scanner(new FileInputStream("rainfall.txt"));
-<<<<<<< HEAD
-            int numberOfMonths = extractRainfallInformation(fis.nextLine().split("[ ]+[\t]*")).length;// using extractRainfallInformation function which returns an array that gets the length of that array
-=======
 
-            int NumberOfMonths = ExtractRainfallInformation(fis.nextLine().split("[ \t]+[ \t]*")).length;  // using ExtractRainFallInformation function which return an array that gets the length of that array
->>>>>>> 2912cf0a7e443eee064d82874ced4f4f91864c5a
+
+            int numberOfMonths = extractRainfallInformation(fis.nextLine().split("[ \t]+[ \t]*")).length;  // using ExtractRainFallInformation function which return an array that gets the length of that array
+
             // to know how many months are written in the txt file
             while (fis.hasNextLine() && fis.nextLine().trim() != "") // counts how many lines in the txt file
                 numberOfLines++;
@@ -76,12 +74,9 @@ public class CityDriver {
                     System.out.println("Error : " + e.getMessage());
                 }
             } while (choice != 8);
-<<<<<<< HEAD
-            PrintWriter write = new PrintWriter(new FileOutputStream("rainfall.txt"));
-=======
-            PrintWriter write = new PrintWriter(new FileOutputStream("rainfall.txt" ));
 
->>>>>>> 2912cf0a7e443eee064d82874ced4f4f91864c5a
+            PrintWriter write = new PrintWriter(new FileOutputStream("rainfall.txt"));
+
             for(City object: cities)
                 write.println(object);
             write.close();
@@ -148,13 +143,10 @@ public class CityDriver {
 
         System.out.println(StringifyHeader(numberOfMonths , months,"Total (mm)") + "\n"); // print "City Country Jan Feb..."
         while (file.hasNextLine()) {
-<<<<<<< HEAD
-            line = file.nextLine().split("[ ]+[\t]*");
-            data = extractRainfallInformation(line);
-=======
+
             line = file.nextLine().split("[ \t]+[ \t]*");
-            data = ExtractRainfallInformation(line);
->>>>>>> 2912cf0a7e443eee064d82874ced4f4f91864c5a
+            data = extractRainfallInformation(line);
+
 
             for(int i = 0 ; i < data.length ; i++){
                 average += data[i];
@@ -292,11 +284,9 @@ public class CityDriver {
             Scanner string = new Scanner(line); //String Scanner to consume the line into city and country and rainfall...
             String cityName = string.next();
             String countryName = string.next();
-<<<<<<< HEAD
-            double[] data = extractRainfallInformation(line.split("[ ]+[\t]*")); //to create the array of monthly rainfall
-=======
-            double[] data = ExtractRainfallInformation(line.split("[ \t]+[ \t]*")); //to create the array of monthly rainfall
->>>>>>> 2912cf0a7e443eee064d82874ced4f4f91864c5a
+
+            double[] data = extractRainfallInformation(line.split("[ \t]+[ \t]*")); //to create the array of monthly rainfall
+
 
             cities[i] = new City(cityName , countryName , data);
             string.close();
