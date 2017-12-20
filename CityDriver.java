@@ -8,17 +8,15 @@ public class CityDriver {
         int numberOfLines = 1; //because we used the first line in extractRainfallInformation...
         City[] cities;
         String[] months = {"Jan", "Feb", "March", "April", "May", "Jun", "July", "Aug", "Sept", "Oct", "Nov", "Dec"};
-
+        boolean append ;
         try {
-            Scanner fis = new Scanner(new FileInputStream("rainfall.txt"));
-            int numberOfMonths = extractRainfallInformation(fis.nextLine().split("[ \t]+[ \t]*")).length;  // using ExtractRainFallInformation function which return an array that gets the length of that array
+            Scanner fis;
+            cities = fileInterpreter();
+            int numberOfMonths = cities[0].getAverageMonthlyRainfall().length ;  // using ExtractRainFallInformation function which return an array that gets the length of that array
             // to know how many months are written in the txt file
-            while (fis.hasNextLine() && fis.nextLine().trim() != "") // counts how many lines in the txt file
-                numberOfLines++;
-            fis.close();
-            fis = new Scanner(new FileInputStream("rainfall.txt")); // reopen the txt file again
-            cities = fileInterpreter(fis, numberOfLines);
-            fis.close();
+
+
+
 
             do {
                 try {
@@ -32,43 +30,59 @@ public class CityDriver {
                             "8. Exit.\n");
                     System.out.print("Please select your choice : ");
                     choice = kb.nextInt();
-                    if (choice > 0 && choice < 9) // all options should be inside the switch statement
-                        switch (choice) {
-                            case 1:
-                                fis = new Scanner(new FileInputStream("rainfall.txt"));
-                                DisplayRainfallForAll(fis, months, numberOfMonths);
-                                fis.close();
-                                break;
-                            case 2:
-                                fis = new Scanner(new FileInputStream("rainfall.txt"));
-                                System.out.println("Enter city name : ");
-                                String City = kb.next();
-                                System.out.println("Enter country name : ");
-                                String Country = kb.next();
-                                DisplayRainfallForCity(fis, City, Country, months, numberOfMonths);
-                                fis.close();
-                                break;
-                            case 3:
-                                fis = new Scanner(new FileInputStream("rainfall.txt"));
-                                DisplayRainfallWithAverage(fis, months, numberOfMonths);
-                                fis.close();
-                                break;
-                            case 4:
-                                modifyRainfallForaCity(kb,fis,numberOfMonths,numberOfLines);
-                                break;
-                            case 6:
-                                cities = addCity(cities, numberOfMonths);
-                                break;
-                            case 7:
-                                fis = new Scanner(new FileInputStream("rainfall.txt"));
-                                removeCity(kb , fis , numberOfMonths);
-                                fis.close();
-                            case 8:
-                                System.exit(9);
+                    if (choice > 0 && choice < 9) { // all options should be inside the switch statement
+                        fis = new Scanner(new FileInputStream("rainfall.txt"));
+                        if (choice < 4) {
 
+                            switch (choice) {
+                                case 1:
+
+                                    DisplayRainfallForAll(fis, months, numberOfMonths);
+
+                                    break;
+                                case 2:
+
+                                    System.out.println("Enter city name : ");
+                                    String City = kb.next();
+                                    System.out.println("Enter country name : ");
+                                    String Country = kb.next();
+                                    DisplayRainfallForCity(fis, City, Country, months, numberOfMonths);
+                                    break;
+                                case 3:
+                                    fis = new Scanner(new FileInputStream("rainfall.txt"));
+                                    DisplayRainfallWithAverage(fis, months, numberOfMonths);
+
+                                    break;
+
+                            }
+
+                        } else {
+                            switch (choice) {
+                                case 4:
+                                    modifyRainfallForaCity(kb, fis, numberOfMonths, numberOfLines);
+                                    updateFile(cities, 0, false);
+                                    break;
+                                case 6:
+                                    cities = addCity(cities, numberOfMonths);
+                                    int last_index = cities.length - 1;
+                                    updateFile(cities, last_index, true);
+                                    break;
+                                case 7:
+                                    fis = new Scanner(new FileInputStream("rainfall.txt"));
+                                    cities = removeCity(kb, fis);
+                                    updateFile(cities, 0, false);
+                                    fis.close();
+                                case 8:
+                                    System.exit(9);
+
+                            }
+                            // write array of reference to the txt file
                         }
+                        fis.close();
+                    }
                     else
                         System.out.print("Invalid choice ...");
+
                     WaitForEnter(kb);// wait for the user to press Enter to continue the while loop as in the documentation
                 } catch (InputMismatchException e) {
                     System.out.println("Error : " + e);
@@ -155,10 +169,10 @@ public class CityDriver {
     }
     //Option 4 .. developed by the hackerMan!
     private static void modifyRainfallForaCity(Scanner kb,Scanner file,int numberOfMonths,int numberOfLines)throws IOException,IllegalArgumentException{
-        file = new Scanner(new FileInputStream("rainfall.txt"));
-        City[] cities = fileInterpreter(file, numberOfLines);//the array of the cities
+
+        City[] cities = fileInterpreter();//the array of the cities
         //Now closing the file and opening it again is a must because I used it in the above previous method
-        file.close();
+
         file = new Scanner(new FileInputStream("rainfall.txt"));
         double [] monthlyRainfall = extractRainfallInformation(file.nextLine().split("[ \t]+[ \t]*"));
         if (numberOfMonths <= 0)
@@ -183,7 +197,7 @@ public class CityDriver {
         System.out.println("Before modification:\t" + cities[cityIndex]);
         cities[cityIndex].modifyAverageMonthlyRainfall(chosenMonth,newRainFallAverage); //here the modification occurs
         System.out.println("\nAfter  modification:\t" + cities[cityIndex]);
-        updateFile(cities,false); //here the original file get modified
+        updateFile(cities,0,false); //here the original file get modified
         System.out.println("\nRainfall file has been updated");
     }
     //The end of HackerMan's first method (Option 4)
@@ -201,61 +215,68 @@ public class CityDriver {
         String cityName = kb.nextLine();
         System.out.println("Enter country name: ");
         String countryName = kb.nextLine();
-        for (int i = 0 ;i < cities.length ; i++ ) {
-            if (cityName.equals(cities[i].getCityName()) && countryName.equals(cities[i].getCountryName()))
-                throw new IllegalArgumentException("Duplicate City and Country Pair.");
-        }
+
+        if(getTheindexOrcheckAvilability(cities,cityName,countryName) != -1)
+            throw new IllegalArgumentException("Duplicate City and Country Pair.");
+
         double [] rainfallAverages = new double[numberOfMonths];
+
         for (int j = 0 ; j < numberOfMonths ; j++) {
             System.out.println("Enter month#" + (j+1) + " total rainfall value [mm]: ");
             rainfallAverages[j] = kb.nextDouble();
         }
+
         City [] updatedcities = new City[cities.length + 1];
+
         for (int i = 0 ; i < cities.length ; i++ )
             updatedcities[i] = cities[i];
+
         City newCity = new City(cityName , countryName , rainfallAverages);
         updatedcities[cities.length] = newCity;
         System.out.println("rainfall.txt file successfully updated . . .");
         return updatedcities;
     }
     // option 7
-    public static void removeCity(Scanner kb,Scanner fis,int numberOfMonths)throws IllegalArgumentException,FileNotFoundException{
-        PrintWriter write= new PrintWriter(new FileOutputStream("rainfall.txt"));
+    public static City[] removeCity(Scanner kb,Scanner fis)throws IllegalArgumentException,IOException{
+
         System.out.println("Enter city name: ");
-        String cityName=kb.nextLine();
+        String cityName = kb.next();
+
         System.out.println("Enter country name: ");
-        String countryName=kb.nextLine();
+        String countryName = kb.next();
+
         boolean found = false;
-        int count=0;
+        int index=0;
         int lineNumber=0;
-        while(fis.hasNextLine()&&!fis.nextLine().trim().equals("")){
-            String[]line=fis.nextLine().split("[ ]+[\t]*");
-            if(line[0].equals(cityName)&&line[1].equals(countryName)){
+
+        while(fis.hasNextLine()){
+            String[] line = fis.nextLine().split("[ ]+");
+            if(line[0].equals(cityName) && line[1].equals(countryName)){
                 found=true;
-                lineNumber=count;
+                lineNumber= index;
             }
-            count++;
+            index++;
         }
         if(!found)
             throw new IllegalArgumentException("No such city and country pair.");
-        City[]updatedCities=new City[count-1];
-        for(int i=0;fis.hasNextLine()&&!fis.nextLine().trim().equals("");i++){
-            String[]line=fis.nextLine().split("[ ]+[\t]*");
-            double[]rainfallAverages=new double[line.length-2];
-            int count2=0;
-            for(int j=2;j<line.length;j++) {
-                rainfallAverages[count2]=Double.parseDouble(line[j]);
-                count2++;
+
+        City[] oldCities = fileInterpreter();
+        City[]updatedCities=new City[oldCities.length - 1];
+
+        index = 0;
+        for(int i = 0 ; i < oldCities.length ; i++){
+            if(i != lineNumber){
+                updatedCities[index] = oldCities[i];
+                index++;
             }
-            if(i!=lineNumber)
-                updatedCities[i]=new City(line[0],line[1],rainfallAverages);
+
+
         }
-        for(int i=0;fis.hasNextLine()&&!fis.nextLine().trim().equals("");i++){
-            write.printf("%-20s %-20s",updatedCities[i].getCityName(),updatedCities[i].getCountryName());
-            for(int j=0;j<numberOfMonths; j++)
-                write.print(updatedCities[i].getAverageMonthlyRainfall()[j]+"   ");
+        return updatedCities;
+
+
         }
-    }
+
 
     //
     //
@@ -307,15 +328,34 @@ public class CityDriver {
     }
 
     // This function analyze the txt file to generate an array of references each of then point to a different City object
-    private static City[] fileInterpreter(Scanner file,int numberOfLines){
+
+
+
+    private static City[] fileInterpreter() throws IOException {
+
+        Scanner file = new Scanner(new FileInputStream("rainfall.txt"));
+        int numberOfLines = 0;
+        while (file.hasNextLine() && file.nextLine().trim() != "") // counts how many lines in the txt file
+            numberOfLines++;
+
+
         City[] cities = new City [numberOfLines];
+        double[] data;
+        String cityName;
+        String countryName;
+        file.close();
+
+        file = new Scanner(new FileInputStream("rainfall.txt"));
 
         for(int i = 0 ; file.hasNextLine(); i++){
             String line = file.nextLine();
             Scanner string = new Scanner(line); //String Scanner to consume the line into city and country and rainfall...
-            String cityName = string.next();
-            String countryName = string.next();
-            double[] data = extractRainfallInformation(line.split("[ \t]+[ \t]*")); //to create the array of monthly rainfall
+            cityName = string.next();
+            countryName = string.next();
+
+
+
+            data = extractRainfallInformation(line.split("[ \t]+[ \t]*")); //to create the array of monthly rainfall
             cities[i] = new City(cityName , countryName , data);
             string.close();
         }
@@ -323,20 +363,26 @@ public class CityDriver {
         return cities;
     }
     //Better to use it in options 4,5,6,7
-    private static void updateFile(City [] cities , boolean append) throws IOException{
+    private static void updateFile(City [] cities ,int start, boolean append ) throws IOException{
         PrintWriter write = new PrintWriter(new FileOutputStream("rainfall.txt",append)); //to append , use append = true || to reset the full file append = false
-        for(City obj:cities){
-            String out = "";
-            out += String.format("%-20s %-20s",obj.getCityName(), obj.getCountryName());
-            write.print(out);
-            for(double rainfall:obj.getAverageMonthlyRainfall())
-                write.printf("%-10.1f",rainfall);
-            write.println();
+        String out;
+        City current;
+        for(int i = start ; i < cities.length ; i++){
+            out = "";
+            current = cities[i];
+            out += String.format("%-20s %-20s",current.getCityName(), current.getCountryName());
+
+            for(double rainfall:current.getAverageMonthlyRainfall())
+                out += String.format("%-10.1f",rainfall);
+
+
+            write.println(out);
         }
+
         write.close();
     }
     //it gives the index of the city in cities array if it exists .. if it DNE :) ->> it returns -1
-    private static int getTheindexOrcheckAvilability(City [] cities, String cityName, String countryName){
+    private static int getTheindexOrcheckAvilability(City [] cities, String cityName, String countryName ){
         for(int i=0;i<cities.length;i++){
             if(cities[i].getCityName().equals(cityName)&&cities[i].getCountryName().equals(countryName))
                 return i ;
