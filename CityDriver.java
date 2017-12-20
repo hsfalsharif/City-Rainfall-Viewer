@@ -67,16 +67,15 @@ public class CityDriver {
                         System.out.print("Invalid choice ...");
                     WaitForEnter(kb);// wait for the user to press Enter to continue the while loop as in the documentation
                 } catch (InputMismatchException e) {
-                    System.out.println("Error : " + e.getMessage());
-                    kb.nextLine();
+                    System.out.println("Error : " + e);
                     WaitForEnter(kb);
                 } catch (IllegalArgumentException e) {
-                    System.out.println("Error : " + e.getMessage());
+                    System.out.println("Error : " + e);
                     WaitForEnter(kb);
                 }
             } while (choice != 8);
         } catch (IOException e) {    //we must handle the IOException inside the main as stated in the documentation
-            System.out.println("Error : " + e.getMessage());
+            System.out.println("Error : " + e);
         }
 
     }
@@ -151,7 +150,7 @@ public class CityDriver {
         }
     }
     //Option 4 .. developed by the hackerMan!
-    private static void modifyRainfallForaCity(Scanner kb,Scanner file,int numberOfMonths,int numberOfLines)throws IOException,IllegalArgumentException {
+    private static void modifyRainfallForaCity(Scanner kb,Scanner file,int numberOfMonths,int numberOfLines)throws IOException,IllegalArgumentException{
         file = new Scanner(new FileInputStream("rainfall.txt"));
         City[] cities = fileInterpreter(file, numberOfLines);//the array of the cities
         //Now closing the file and opening it again is a must because I used it in the above previous method
@@ -183,7 +182,14 @@ public class CityDriver {
         updateFile(cities,false); //here the original file get modified
         System.out.println("\nRainfall file has been updated");
     }
-    //The end of HackerMan's first method (Option 4)
+        //The end of HackerMan's first method (Option 4)
+
+        //option 5..
+    private static void addRainfallForAllCities(City[] cities,Scanner file, Scanner kb ,int numOfLines, int numOfMonths) throws IOException,IllegalArgumentException {
+        file = new Scanner(new FileInputStream("rainfall.txt"));
+    }
+
+
     // option 6
     private static City[] addCity(City[] cities, int numberOfMonths) throws IllegalArgumentException {
         Scanner kb = new Scanner(System.in);
