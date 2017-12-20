@@ -182,9 +182,9 @@ public class CityDriver {
         updateFile(cities,false);
 
     }
-        //The end of HackerMan's first method (Option 4)
+    //The end of HackerMan's first method (Option 4)
 
-        //option 5..
+    //option 5..
     private static void addRainfallForAllCities(Scanner file, Scanner kb,int numberOfLines) throws IOException,IllegalArgumentException {
         file = new Scanner(new FileInputStream("rainfall.txt"));
         City [] cities = new City[numberOfLines];
@@ -220,7 +220,7 @@ public class CityDriver {
         }
         updateFile(cities,false);
     }
-        //..the end of option 5
+    //..the end of option 5
 
 
     // option 6
@@ -231,7 +231,7 @@ public class CityDriver {
         System.out.print("Enter country name:");
         String countryName = kb.next();
         if(getTheindexOrcheckAvilability(cities,cityName,countryName)!=-1)
-           throw new IllegalArgumentException("Duplicate City and Country Pair.");
+            throw new IllegalArgumentException("Duplicate City and Country Pair.");
         double [] rainfallAverages = new double[numberOfMonths];
         for (int j = 0 ; j < numberOfMonths ; j++) {
             System.out.println("Enter month#" + (j+1) + " total rainfall value [mm]: ");
