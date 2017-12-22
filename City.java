@@ -40,6 +40,9 @@ public class City {
             throw new IllegalArgumentException("Brother: you either entered an invalid month or average rainfall..figure it out yourself");
         averageMonthlyRainfall[monthTobeEdited-1] = newAverageRainfall;
     }
+    public void setAverageMonthlyRainfall(double [] newData){
+        this.averageMonthlyRainfall = newData.clone();
+    }
 
 
 }
