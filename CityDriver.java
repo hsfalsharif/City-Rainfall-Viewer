@@ -80,9 +80,10 @@ public class CityDriver {
                                     updateFile(cities, last_index, true);
                                     break;
                                 case 7:
-                                    cities = removeCity(kb, fis);
+                                    cities = removeCity(kb);
                                     updateFile(cities, 0, false);
                                     fis.close();
+                                    break;
                                 case 8:
                                     System.exit(9);
 
@@ -198,7 +199,7 @@ public class CityDriver {
         String cityName = kb.next();
         System.out.print("Enter the name of the country: ");
         String countryName = kb.next();
-        int cityIndex = getTheindexOrcheckAvilability(cities,cityName,countryName);
+        int cityIndex = getTheindexOrcheckAvilability(cityName,countryName);
 
         if(cityIndex == -1)
             throw new IllegalArgumentException("Error: city and country pair is not found in text file.");
@@ -259,7 +260,7 @@ public class CityDriver {
 
         City[] cities = fileInterpreter();
 
-        if(getTheindexOrcheckAvilability(cities,cityName,countryName) != -1)
+        if(getTheindexOrcheckAvilability(cityName,countryName) != -1)
             throw new IllegalArgumentException("Duplicate City and Country Pair.");
 
         int numberOfMonths = cities[0].getAverageMonthlyRainfall().length;
@@ -281,45 +282,29 @@ public class CityDriver {
         return updatedcities;
     }
     // option 7
-    private static City[] removeCity(Scanner kb,Scanner fis)throws IllegalArgumentException,IOException{
+    private static City[] removeCity(Scanner kb)throws IllegalArgumentException,IOException{
 
         System.out.println("Enter city name: ");
         String cityName = kb.next();
-
         System.out.println("Enter country name: ");
         String countryName = kb.next();
-
         boolean found = false;
-        int index=0;
-        int lineNumber=0;
+        City[] outCities = fileInterpreter();
+        int lineNumber = getTheindexOrcheckAvilability(cityName, countryName);
 
-        while(fis.hasNextLine()){
-            String[] line = fis.nextLine().split("[ ]+");
-            if(line[0].equals(cityName) && line[1].equals(countryName)){
-                found=true;
-                lineNumber= index;
-            }
-            index++;
-        }
-        if(!found)
+        if (lineNumber == -1)
             throw new IllegalArgumentException("No such city and country pair.");
-
-        City[] oldCities = fileInterpreter();
-        City[]updatedCities=new City[oldCities.length - 1];
-
-        index = 0;
-        for(int i = 0 ; i < oldCities.length ; i++){
-            if(i != lineNumber){
-                updatedCities[index] = oldCities[i];
-                index++;
+        int count2 = 0;
+        City[] updatedCities = new City[outCities.length-1];
+        for (int i = 0; i < outCities.length ; i++){
+            if(i != lineNumber) {
+                updatedCities[count2] = outCities[i];
+                count2++;
             }
-
-
         }
-        return updatedCities;
 
-
-        }
+        return  updatedCities;
+    }
 
 
     //
@@ -426,7 +411,7 @@ public class CityDriver {
         write.close();
     }
     //it gives the index of the city in cities array if it exists .. if it DNE :) ->> it returns -1
-    private static int getTheindexOrcheckAvilability(City [] cities, String cityName, String countryName ) throws  IOException{
+    private static int getTheindexOrcheckAvilability(String cityName, String countryName ) throws  IOException{
         Scanner file = new Scanner(new FileInputStream("rainfall.txt"));
         String[] line;
         for(int i=0 ; file.hasNextLine() ;i++){
