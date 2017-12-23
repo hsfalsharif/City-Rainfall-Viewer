@@ -67,7 +67,7 @@ public class CityDriver {
                                 removeCity(kb,file,numberOfLines);
                                 break;
                             case 8:
-                                System.exit(9);
+                                System.exit(2);
 
                         }
                     else
@@ -84,7 +84,6 @@ public class CityDriver {
         } catch (IOException e) {    //we must handle the IOException inside the main as stated in the documentation
             System.out.println("Error : " + e);
         }
-
     }
     // option number 1 ; we print from the txt file directly to the screen as stated in the documentation
     public static void DisplayRainfallForAll(Scanner file,String[] months , int numberOfMonths) throws IllegalArgumentException {
@@ -101,7 +100,6 @@ public class CityDriver {
             line = file.nextLine().split("[ \t]+[ \t]*");
             Body = StringifyBody(line);
             System.out.println(Body); // print "Arusha    Tanzania  22.0" to the reset of the txt file
-
         }
     }
     //option 2
@@ -199,7 +197,7 @@ public class CityDriver {
             numOfMonths++;
         }
         double [] monthlyRainfall = new double[numOfMonths+1]; //1 for the month that will be added..
-        if(numOfMonths>12)
+        if(numOfMonths>=12)
             throw new IllegalArgumentException("All the months are filled with information");
         file.close();
         file = new Scanner(new FileInputStream("rainfall.txt"));
@@ -238,7 +236,7 @@ public class CityDriver {
             throw new IllegalArgumentException("Duplicate City and Country Pair.");
         double [] rainfallAverages = new double[numberOfMonths];
         for (int j = 0 ; j < numberOfMonths ; j++) {
-            System.out.println("Enter month#" + (j+1) + " total rainfall value [mm]: ");
+            System.out.print("Enter month#" + (j+1) + " total rainfall value [mm]: ");
             rainfallAverages[j] = kb.nextDouble();
         }
         City [] updatedCities = new City[cities.length + 1];
@@ -277,7 +275,7 @@ public class CityDriver {
                 count2++;
             }
         }
-        updateFile(updatedCities,true);
+        updateFile(updatedCities,false);
     }
 
     //
@@ -366,7 +364,6 @@ public class CityDriver {
         }
         return -1;
     }
-
 }
 
 
