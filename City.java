@@ -23,8 +23,11 @@ public class City {
     }
 
     public void addMonthlyAverageRainfall(double   rainfall) throws IllegalArgumentException{
-        if(rainfall<0||rainfall>1000 )
+        if(rainfall < 0 || rainfall>1000  || this.averageMonthlyRainfall.length >= 12 )
             throw new IllegalArgumentException("Brother: you either entered an invalid month or average rainfall..figure it out yourself");
+
+        if(this.averageMonthlyRainfall.length >= 12 )
+            throw new IllegalArgumentException("All the months are filled with information");
 
         double[] newData = new double[this.averageMonthlyRainfall.length + 1];
 

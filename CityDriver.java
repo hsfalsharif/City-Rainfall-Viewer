@@ -229,7 +229,7 @@ public class CityDriver {
         City [] cities = fileInterpreter();
         int numOfMonths = cities[0].getAverageMonthlyRainfall().length;
 
-        if(numOfMonths>12)
+        if(numOfMonths >= 12)
             throw new IllegalArgumentException("All the months are filled with information");
 
 
