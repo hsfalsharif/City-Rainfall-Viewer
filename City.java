@@ -1,3 +1,10 @@
+/*
+*
+*               ############# FINAL ################
+*
+*
+* */
+
 public class City {
     private String cityName;
     private String countryName;
@@ -22,8 +29,13 @@ public class City {
         return countryName;
     }
 
+    public double[] getAverageMonthlyRainfall() {
+        return averageMonthlyRainfall.clone();
+    }
+
+
     public void addMonthlyAverageRainfall(double   rainfall) throws IllegalArgumentException{
-        if(rainfall < 0 || rainfall>1000  || this.averageMonthlyRainfall.length >= 12 )
+        if(rainfall < 0 || rainfall>1000 )
             throw new IllegalArgumentException("Brother: you either entered an invalid month or average rainfall..figure it out yourself");
 
         if(this.averageMonthlyRainfall.length >= 12 )
@@ -37,9 +49,7 @@ public class City {
         newData[this.averageMonthlyRainfall.length] = rainfall;
         this.averageMonthlyRainfall = newData;
     }
-    public double[] getAverageMonthlyRainfall() {
-        return averageMonthlyRainfall.clone();
-    }
+
 
 
     public void modifyAverageMonthlyRainfall(double rainfall ,int monthNum )throws IllegalArgumentException{
