@@ -65,7 +65,7 @@ public class CityDriver {
                         } else {
                             switch (choice) {
                                 case 4:
-                                    modifyRainfallForaCity(kb);
+                                    cities = modifyRainfallForaCity(kb);
                                     updateFile(cities, 0, false);
 
                                     break;
