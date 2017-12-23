@@ -65,6 +65,7 @@ public class CityDriver {
                             case 7:
                                 file = new Scanner(new FileInputStream("rainfall.txt"));
                                 removeCity(kb,file,numberOfLines);
+                                break;
                             case 8:
                                 System.exit(9);
 
@@ -365,4 +366,8 @@ public class CityDriver {
         }
         return -1;
     }
+
 }
+
+
+
