@@ -41,7 +41,7 @@ public class City {
 
     public void modifyAverageMonthlyRainfall(double rainfall ,int monthNum )throws IllegalArgumentException{
 
-        if(rainfall<0||rainfall>1000||rainfall<1||rainfall>12)
+        if(rainfall<0||rainfall>1000 )
             throw new IllegalArgumentException("Brother: you either entered an invalid month or average rainfall..figure it out yourself");
 
         averageMonthlyRainfall[monthNum-1] = rainfall;
