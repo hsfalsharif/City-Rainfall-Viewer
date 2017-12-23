@@ -255,7 +255,7 @@ public class CityDriver {
         System.out.println("Enter country name: ");
         String countryName = kb.next();
         boolean found = false;
-        City[] outCities =  fileInterpreter(file,numberOfLines);
+        City[] outCities = fileInterpreter(file,numberOfLines);
         int count = 0;
         int lineNumber = 0;
         int count2 = 0;
@@ -271,7 +271,7 @@ public class CityDriver {
         City[] updatedCities = new City[outCities.length-1];
         if (!found)
             throw new IllegalArgumentException("No such city and country pair.");
-        for (int i = lineNumber; i < outCities.length ; i++){
+        for (int i = 0; i < outCities.length ; i++){
             if(i != lineNumber) {
                 updatedCities[count2] = outCities[i];
                 count2++;
