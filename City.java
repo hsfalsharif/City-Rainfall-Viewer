@@ -8,6 +8,10 @@ public class City {
         this.averageMonthlyRainfall = new double [averageMonthlyRainfall.length] ;
         this.averageMonthlyRainfall = averageMonthlyRainfall.clone();
     }
+    public City(String cityName , String countryName) {
+        this.cityName = cityName;
+        this.countryName = countryName;
+    }
     public City(City copyCity) throws IllegalArgumentException {
         this(copyCity.cityName , copyCity.countryName , copyCity.averageMonthlyRainfall);
     }
